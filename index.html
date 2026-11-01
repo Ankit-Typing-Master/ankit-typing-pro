@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ankit Typing Pro</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #172554;
+    }
+    header {
+      background: #102b55;
+      color: white;
+      text-align: center;
+      padding: 25px 12px;
+    }
+    header h1 { margin: 0; }
+    .container {
+      max-width: 850px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px #0001;
+      margin-bottom: 20px;
+    }
+    button, select {
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 8px;
+      font-size: 16px;
+      margin: 5px;
+    }
+    button {
+      background: #1765d1;
+      color: white;
+      cursor: pointer;
+    }
+    textarea {
+      width: 100%;
+      height: 130px;
+      padding: 12px;
+      font-size: 18px;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+    }
+    #passage {
+      font-size: 20px;
+      line-height: 1.8;
+      background: #eff6ff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 10px;
+      text-align: center;
+    }
+    .stat {
+      background: #eaf2ff;
+      padding: 15px;
+      border-radius: 8px;
+      min-width: 100px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⌨ Ankit Typing Pro</h1>
+  <p>Hindi & English Typing Practice</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Typing Test</h2>
+    <label for="language">Choose Language:</label>
+    <select id="language" onchange="changeText()">
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+    </select>
+
+    <p id="passage"></p>
+
+    <textarea id="typing" placeholder="Start typing here..."
+      oninput="calculate()"></textarea>
+
+    <div class="stats">
+      <div class="stat">
+        <h3 id="time">60</h3>
+        <p>Seconds</p>
+      </div>
+      <div class="stat">
+        <h3 id="wpm">0</h3>
+        <p>WPM</p>
+      </div>
+      <div class="stat">
+        <h3 id="accuracy">100%</h3>
+        <p>Accuracy</p>
+      </div>
+    </div>
+
+    <button onclick="startTest()">Start Test</button>
+    <button onclick="resetTest()">Reset</button>
+  </div>
+
+  <div class="card">
+    <h2>About Ankit Typing Pro</h2>
+    <p>Practice Hindi and English typing for SSC,
+    Railway, Banking and other competitive exams.</p>
+    <p>Improve your typing speed and accuracy every day.</p>
+  </div>
+
+</div>
+
+<script>
+const passages = {
+  en: "Practice makes a person better. Regular typing practice improves speed and accuracy. Work hard every day and achieve your goals.",
+  hi: "नियमित अभ्यास से टाइपिंग की गति और शुद्धता बेहतर होती है। हर दिन मेहनत करें और अपने लक्ष्य को प्राप्त करें।"
+};
+
+let seconds = 60;
+let timer = null;
+let started = false;
+
+function changeText() {
+  document.getElementById("passage").textContent =
+    passages[document.getElementById("language").value];
+  resetTest();
+}
+
+function startTest() {
+  if (started) return;
+  started = true;
+  timer = setInterval(() => {
+    seconds--;
+    document.getElementById("time").textContent = seconds;
+    calculate();
+    if (seconds <= 0) {
+      clearInterval(timer);
+      started = false;
+      document.getElementById("typing").disabled = true;
+    }
+  }, 1000);
+  document.getElementById("typing").focus();
+}
+
+function calculate() {
+  const text = document.getElementById("typing").value;
+  const target = passages[document.getElementById("language").value];
+  let correct = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === target[i]) correct++;
+  }
+  const accuracy = text.length
+    ? Math.round(correct / text.length * 100) : 100;
+  const elapsed = 60 - seconds;
+  const wpm = elapsed > 0
+    ? Math.round(text.trim().split(/\s+/).filter(Boolean).length / (elapsed / 60))
+    : 0;
+  document.getElementById("accuracy").textContent = accuracy + "%";
+  document.getElementById("wpm").textContent = wpm;
+}
+
+function resetTest() {
+  clearInterval(timer);
+  seconds = 60;
+  started = false;
+  document.getElementById("time").textContent = 60;
+  document.getElementById("typing").value = "";
+  document.getElementById("typing").disabled = false;
+  document.getElementById("wpm").textContent = 0;
+  document.getElementById("accuracy").textContent = "100%";
+}
+
+changeText();
+</script>
+
+</body>
+</html>
